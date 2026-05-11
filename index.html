@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reporte de Indicadores | Procesos KZero</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0e17;
+      --surface: #111827;
+      --accent: #00e5ff;
+      --accent2: #7c3aed;
+      --text: #f0f4ff;
+      --muted: #64748b;
+      --border: rgba(255,255,255,0.07);
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% 10%, rgba(0,229,255,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(124,58,237,0.08) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 2.5rem;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      background: rgba(10,14,23,0.7);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      animation: slideDown 0.6s ease both;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: #000;
+    }
+
+    .logo-text {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .logo-text span {
+      color: var(--accent);
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(0,229,255,0.1);
+      border: 1px solid rgba(0,229,255,0.25);
+      color: var(--accent);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* Hero */
+    .hero {
+      padding: 3rem 2.5rem 2rem;
+      animation: fadeUp 0.7s 0.2s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .hero-label::before {
+      content: '';
+      display: inline-block;
+      width: 18px;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      max-width: 600px;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.6;
+    }
+
+    /* Report container */
+    .report-section {
+      flex: 1;
+      padding: 0 2.5rem 3rem;
+      animation: fadeUp 0.7s 0.4s ease both;
+    }
+
+    .report-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(0,229,255,0.05),
+        0 24px 60px rgba(0,0,0,0.5);
+      position: relative;
+    }
+
+    .report-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2), transparent);
+    }
+
+    .report-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .report-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .report-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+
+    .report-dots span:nth-child(1) { background: #ff5f57; }
+    .report-dots span:nth-child(2) { background: #ffbd2e; }
+    .report-dots span:nth-child(3) { background: #28c840; }
+
+    .report-title-bar {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .report-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .report-actions a {
+      font-size: 0.75rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 6px;
+      background: rgba(0,229,255,0.08);
+      border: 1px solid rgba(0,229,255,0.2);
+      color: var(--accent);
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .report-actions a:hover {
+      background: rgba(0,229,255,0.15);
+    }
+
+    .iframe-wrap {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+      background: #0d1117;
+    }
+
+    .iframe-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.75rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      animation: fadeUp 0.7s 0.6s ease both;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    @media (max-width: 600px) {
+      header, .hero, .report-section { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .hero { padding-top: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">KZ</div>
+        <div class="logo-text">Procesos<span>KZero</span></div>
+      </div>
+      <div class="badge">Indicadores en vivo</div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-label">Inteligencia operativa</div>
+      <h1>Reporte de <em>indicadores</em></h1>
+      <p>Visualizá en tiempo real los indicadores de dotación, turnos y sectores. Interactuá con el reporte directamente desde esta página.</p>
+    </section>
+
+    <section class="report-section">
+      <div class="report-card">
+        <div class="report-topbar">
+          <div class="report-dots">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="report-title-bar">Power BI — Reporte de Indicadores</div>
+          <div class="report-actions">
+            <a href="https://app.powerbi.com/view?r=eyJrIjoiYWMwYjhjOWEtNGNkYy00NjFlLWFlYWEtNWFkN2ZjOWUyYjFhIiwidCI6IjJlN2VmYWYwLTRiMTQtNDc4Zi04MWRiLWUxYTU3YTBmNGNkMSIsImMiOjR9" target="_blank">↗ Abrir en Power BI</a>
+          </div>
+        </div>
+        <div class="iframe-wrap">
+          <iframe
+            title="Reporte de Indicadores"
+            src="https://app.powerbi.com/view?r=eyJrIjoiYWMwYjhjOWEtNGNkYy00NjFlLWFlYWEtNWFkN2ZjOWUyYjFhIiwidCI6IjJlN2VmYWYwLTRiMTQtNDc4Zi04MWRiLWUxYTU3YTBmNGNkMSIsImMiOjR9"
+            frameborder="0"
+            allowfullscreen="true">
+          </iframe>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      © 2026 ProcesosKZero &nbsp;·&nbsp; Publicado con <a href="https://pages.github.com" target="_blank">GitHub Pages</a>
+    </footer>
+  </div>
+</body>
+</html>
